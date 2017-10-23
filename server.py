@@ -31,6 +31,10 @@ def sample():
 @server.route('/rate')
 def rate():
     return render_template('rate.html')    
+    
+@server.route('/locations')
+def locations():
+    return render_template('locations.html') 
 
 @server.errorhandler(404)
 def page_not_found(error):
