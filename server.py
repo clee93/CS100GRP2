@@ -2,10 +2,16 @@
 from flask import Flask
 from flask import render_template
 from flask import jsonify
+from flask import Flask, request, session, g, redirect, url_for, abort, \
+     render_template, flash
 server = Flask(__name__)
+
+import os
+import sqlite3 as sql
 
 # Importing Other Modules
 import requests
+import datetime
 
 # Importing Custom Modules
 from app import main
@@ -27,10 +33,6 @@ def name(name=None):
 @server.route('/sample')
 def sample():
     return render_template('map.html')
-    
-@server.route('/rate')
-def rate():
-    return render_template('rate.html')    
     
 @server.route('/locations')
 def locations():
@@ -70,3 +72,33 @@ def location_image(search):
     }
     response = requests.request("GET", url, params=querystring)
     return response.url;
+    
+    
+@server.route('/rate')
+def new_student():
+   return render_template('rating.html')
+   
+@server.route('/rate',methods = ['POST', 'GET'])
+def rate():
+   if request.method == 'POST':
+      
+      try:
+         title = request.form['title']
+         review = request.form['review']
+         rating = request.form['rating']
+         name = request.form['name']
+         date = datetime.datetime.now()
+         msg = " "
+         with sql.connect("database.db") as con:
+            cur = con.cursor()
+            cur.execute("INSERT INTO ratings (title,review,rating,name,date) VALUES (?,?,?,?,?)",(title,review,rating,name,date) )
+            
+            con.commit()
+            msg = "Record successfully added"
+      except:
+         con.rollback()
+         msg = "error in insert operation"
+      
+      finally:
+         return render_template("result.html",msg=msg)
+         con.close()

@@ -1,0 +1,9 @@
+import sqlite3
+
+conn = sqlite3.connect('database.db')
+print "Opened database successfully";
+
+conn.execute('CREATE TABLE locations (name TEXT, function TEXT, latitude TEXT, longitude TEXT, id TEXT, rating TEXT)')
+conn.execute('CREATE TABLE ratings (title TEXT, review TEXT, rating TEXT, name TEXT, date TEXT)')
+print "Table created successfully";
+conn.close()
